@@ -3,7 +3,7 @@
 <#else>
     <#assign jobName="${executionData.job.name}">
 </#if>
-<#assign message="<${executionData.href}|Execution #${executionData.id}> of job <${executionData.job.href}|${jobName}>">
+<#assign message="[Execution #${executionData.id}](${executionData.href}) of job [${jobName}](${executionData.job.href})">
 <#if trigger == "start">
     <#assign state="Started">
 <#elseif trigger == "failure">
@@ -21,7 +21,7 @@
          "fields":[
             {
                "title":"Job Name",
-               "value":"<${executionData.job.href}|${jobName}>",
+               "value":"[${jobName}](${executionData.job.href})",
                "short":true
             },
             {
@@ -36,7 +36,7 @@
             },
             {
                "title":"Execution ID",
-               "value":"<${executionData.href}|#${executionData.id}>",
+               "value":"[#${executionData.id}](${executionData.href})",
                "short":true
             }
 <#if trigger == "failure">

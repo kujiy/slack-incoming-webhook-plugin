@@ -1,4 +1,4 @@
-<#assign message="<${executionData.href}|Execution #${executionData.id}> of job <${executionData.job.href}|${executionData.job.name}> has ">
+<#assign message="[Execution #${executionData.id}](${executionData.href}) of job [${executionData.job.name}](${executionData.job.href}) has ">
 <#if trigger == "start">
     <#assign state="started">
 <#elseif trigger == "failure">
