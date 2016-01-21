@@ -1,4 +1,4 @@
-rundeck-slack-incoming-webhook-plugin
+rundeck-mattermost-incoming-webhook-plugin
 ======================
 
 Sends rundeck notification messages to a mattermost channel.  This plugin  is based on [rundeck-slack-plugin](https://github.com/bitplaces/rundeck-slack-plugin)(based on run-hipchat-plugin).
