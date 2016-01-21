@@ -1,7 +1,7 @@
 rundeck-slack-incoming-webhook-plugin
 ======================
 
-Sends rundeck notification messages to a slack channel.  This plugin  is based on [rundeck-slack-plugin](https://github.com/bitplaces/rundeck-slack-plugin)(based on run-hipchat-plugin).
+Sends rundeck notification messages to a mattermost channel.  This plugin  is based on [rundeck-slack-plugin](https://github.com/bitplaces/rundeck-slack-plugin)(based on run-hipchat-plugin).
 
 Installation Instructions
 -------------------------
@@ -28,15 +28,13 @@ The only required configuration settings are:
 
 - `WebHook URL`: Slack incoming-webhook URL.
 
-## Slack message example.
+## Mattermost  message example.
+
 
 On success.
 
 ![on success](on_success.png)
 
-On failure.
-
-![on failure](on_failure.png)
 
 ## Contributors
 *  Original [hbakkum/rundeck-hipchat-plugin](https://github.com/hbakkum/rundeck-hipchat-plugin) author: Hayden Bakkum @hbakkum
