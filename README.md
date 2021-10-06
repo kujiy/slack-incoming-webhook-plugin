@@ -18,7 +18,14 @@ See the [Included Plugins | Rundeck Documentation](http://rundeck.org/docs/plugi
 1. build the source by gradle.
 2. copy jarfile to `$RDECK_BASE/libext`
 
+### Build with docker:
+```
+$ docker build -t rundeck-mattermost-incoming-webhook-plugin:latest .
+$ docker run --rm -v `pwd`:/home/rundeck-mattermost-incoming-webhook-plugin rundeck-mattermost-incoming-webhook-plugin:latest
 
+```
+
+It creates ``build/libs/rundeck-mattermost-0.6.jar``
 ## Configuration
 This plugin uses Slack incoming-webhooks. Create a new webhook and copy the provided url.
 
