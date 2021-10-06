@@ -22,13 +22,13 @@ $ docker run --rm -v `pwd`:/home/rundeck-mattermost-incoming-webhook-plugin rund
 
 It creates ``build/libs/rundeck-mattermost-0.6.jar``
 ## Configuration
-This plugin uses Slack incoming-webhooks. Create a new webhook and copy the provided url.
+This plugin uses Mattermost incoming-webhooks. Create a new webhook and copy the provided url.
 
 ![configuration](config.png)
 
 The only required configuration settings are:
 
-- `WebHook URL`: Slack incoming-webhook URL.
+- `WebHook URL`: Mattermost incoming-webhook URL.
 
 ## Mattermost  message example.
 
@@ -45,3 +45,4 @@ On success.
     *  @notandy
     *  @lusis
 *  @sawanoboly
+*  @MatthGyver
