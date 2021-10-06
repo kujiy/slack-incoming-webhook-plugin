@@ -15,19 +15,19 @@
  *  limitations under the License.
  */
 
-package com.bitplaces.rundeck.plugins.slack;
+package com.bitplaces.rundeck.plugins.mattermost;
 
 /**
  * @author Andrew Karpow
  */
-public class SlackNotificationPluginException extends RuntimeException {
+public class MattermostNotificationPluginException extends RuntimeException {
 
     /**
      * Constructor.
      *
      * @param message error message
      */
-    public SlackNotificationPluginException(String message) {
+    public MattermostNotificationPluginException(String message) {
         super(message);
     }
 
@@ -37,7 +37,7 @@ public class SlackNotificationPluginException extends RuntimeException {
      * @param message error message
      * @param cause exception cause
      */
-    public SlackNotificationPluginException(String message, Throwable cause) {
+    public MattermostNotificationPluginException(String message, Throwable cause) {
         super(message, cause);
     }
 
