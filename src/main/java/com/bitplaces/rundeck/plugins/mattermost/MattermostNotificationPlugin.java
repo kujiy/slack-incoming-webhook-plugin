@@ -55,7 +55,10 @@ public class MattermostNotificationPlugin implements NotificationPlugin {
 
     private static final String MATTERMOST_MESSAGE_FROM_NAME = "Rundeck";
 //    private static final String SLACK_EXT_MESSAGE_TEMPLATE_PATH = "/var/lib/rundeck/libext/templates";
+
     private static final String MATTERMOST_MESSAGE_TEMPLATE = "mattermost-incoming-message.ftl";
+    // private static final String MATTERMOST_MESSAGE_TEMPLATE = "mattermost-message.ftl";
+
 
     private static final String TRIGGER_START = "start";
     private static final String TRIGGER_SUCCESS = "success";

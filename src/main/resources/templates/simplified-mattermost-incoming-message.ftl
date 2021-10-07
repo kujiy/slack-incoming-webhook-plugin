@@ -1,8 +1,8 @@
 
 <#if executionData.job.group??>
-    <#assign jobName="${executionData.job.group} / ${executionData.job.name}">
+    <#assign jobName="${executionData.project} > ${executionData.job.group} / ${executionData.job.name}">
 <#else>
-    <#assign jobName="${executionData.job.name}">
+    <#assign jobName="${executionData.project} > ${executionData.job.name}">
 </#if>
 <#assign message="[Execution #${executionData.id}](${executionData.href}) of job [${jobName}](${executionData.job.href})">
 <#if trigger == "start">
@@ -14,7 +14,8 @@
 </#if>
 
 {
-   "author_name": "Rundeck", 
+   "channel":"${channel}",
+   "author_name": "Rundeck",
    "username": "Rundeck",
    "icon_emoji": ":rundeck:",
    "attachments":[
@@ -24,28 +25,18 @@
          "color":"${color}",
          "fields":[
             {
-               "title":"Job Name",
+               "title":":unicorn_face: Job Name",
                "value":"[${jobName}](${executionData.job.href})",
                "short":true
             },
             {
-               "title":"Project",
-               "value":"${executionData.project}",
-               "short":true
-            },
-            {
-               "title":":unicorn_face: Status",
+               "title":":rainbow: Status",
                "value":"${state}",
-               "short":true
-            },
-            {
-               "title":":rainbow: Execution ID",
-               "value":"[#${executionData.id}](${executionData.href})",
                "short":true
             }
 <#if trigger == "failure">
             ,{
-               "title":"Failed Nodes",
+               "title":":skull_and_crossbones: Failed Nodes",
                "value":"${executionData.failedNodeListString!"- (Job itself failed)"}",
                "short":false
             }
