@@ -14,9 +14,10 @@
 </#if>
 
 {
-   "author_name": "Rundeck", 
-   "username": "Rundeck",
-   "icon_emoji": ":rundeck:",
+   "channel": "${channel}",
+   "username": "${username!"RunDeck"}",
+   <#if (icon_url)?has_content>"icon_url": "${icon_url}",<#else>"icon_emoji": ":rundeck:",</#if>
+   "author_name": "${username!"RunDeck"}", 
    "attachments":[
       {
          "fallback":"${state}: ${message}",
@@ -34,12 +35,12 @@
                "short":true
             },
             {
-               "title":":unicorn_face: Status",
+               "title":"Status",
                "value":"${state}",
                "short":true
             },
             {
-               "title":":rainbow: Execution ID",
+               "title":"Execution ID",
                "value":"[#${executionData.id}](${executionData.href})",
                "short":true
             }
