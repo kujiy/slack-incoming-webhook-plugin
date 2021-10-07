@@ -1,8 +1,7 @@
-
 <#if executionData.job.group??>
-    <#assign jobName="${executionData.job.group} / ${executionData.job.name}">
+    <#assign jobName="${executionData.project} > ${executionData.job.group} / ${executionData.job.name}">
 <#else>
-    <#assign jobName="${executionData.job.name}">
+    <#assign jobName="${executionData.project} > ${executionData.job.name}">
 </#if>
 <#assign message="[Execution #${executionData.id}](${executionData.href}) of job [${jobName}](${executionData.job.href})">
 <#if trigger == "start">
@@ -12,12 +11,11 @@
 <#else>
     <#assign state="Succeeded">
 </#if>
-
 {
    "channel": "${channel}",
    "username": "${username!"RunDeck"}",
    <#if (icon_url)?has_content>"icon_url": "${icon_url}",<#else>"icon_emoji": ":rundeck:",</#if>
-   "author_name": "${username!"RunDeck"}", 
+   "author_name": "Rundeck", 
    "attachments":[
       {
          "fallback":"${state}: ${message}",
@@ -35,12 +33,12 @@
                "short":true
             },
             {
-               "title":"Status",
+               "title":":unicorn_face: Status",
                "value":"${state}",
                "short":true
             },
             {
-               "title":"Execution ID",
+               "title":":rainbow: Execution ID",
                "value":"[#${executionData.id}](${executionData.href})",
                "short":true
             }

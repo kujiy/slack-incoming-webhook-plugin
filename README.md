@@ -20,7 +20,7 @@ $ docker run --rm -v `pwd`:/home/rundeck-mattermost-incoming-webhook-plugin rund
 
 ```
 
-It creates ``build/libs/rundeck-mattermost-0.6.jar``
+It creates ``build/libs/rundeck-mattermost-0.7.jar``
 ## Configuration
 This plugin uses Mattermost incoming-webhooks. Create a new webhook and copy the provided url.
 
@@ -29,6 +29,14 @@ This plugin uses Mattermost incoming-webhooks. Create a new webhook and copy the
 The only required configuration settings are:
 
 - `WebHook URL`: Mattermost incoming-webhook URL.
+- `Channel`: Mattermost channel *(default = town-square)*
+- `Icon URL`: URL of a custom icon
+- `User Name`: Notify sender identity *(default = Rundeck )*
+- `External Template`: file name of a Freemarker custom template
+
+### Custom template
+- Create folder ``/var/lib/rundeck/libext/mattermost-notifications-templates``
+- Put your custom ``ftl`` file template into this folder *(ex into mattermost-notifications-templates folder)*
 
 ## Mattermost  message example.
 

@@ -54,8 +54,9 @@ public class MattermostNotificationPlugin implements NotificationPlugin {
     private static final String MATTERMOST_MESSAGE_COLOR_RED = "danger";
 
     private static final String MATTERMOST_MESSAGE_FROM_NAME = "Rundeck";
-//    private static final String SLACK_EXT_MESSAGE_TEMPLATE_PATH = "/var/lib/rundeck/libext/templates";
+    private static final String SLACK_EXT_MESSAGE_TEMPLATE_PATH = "/var/lib/rundeck/libext/mattermost-notifications-templates";
     private static final String MATTERMOST_MESSAGE_TEMPLATE = "mattermost-incoming-message.ftl";
+
 
     private static final String TRIGGER_START = "start";
     private static final String TRIGGER_SUCCESS = "success";
@@ -65,11 +66,41 @@ public class MattermostNotificationPlugin implements NotificationPlugin {
 
     private static final Configuration FREEMARKER_CFG = new Configuration();
 
-    @PluginProperty(title = "WebHook URL", description = "Mattermost Incoming WebHook URL", required = true)
+    @PluginProperty(title = "WebHook URL",
+                    description = "Mattermost Incoming WebHook URL",
+                    required = true)
     private String webhook_url;
 
+    @PluginProperty(
+            title = "Channel",
+            description = "Override default Mattermost channel to send notification message to.",
+            required = false,
+            defaultValue = "town-square")
+    private String channel;
+
+
+    @PluginProperty(
+            title = "Icon Url",
+            description = "Override webhook Icon",
+            required = false
+    )
+    private String icon_url;
+
+    @PluginProperty(
+            title = "User Name",
+            description = "Override webhook username",
+            required = false
+    )
+    private String username;
+    @PluginProperty(
+            title = "External Template",
+            description = "External Freemarker Template (stored into /var/lib/rundeck/libext/mattermost-notifications-templates)",
+            required = false
+    )
+    private String external_template;
+
     /**
-     * Sends a message to a Mattermost room when a job notification event is raised by Rundeck.
+     * Sends a message to a Mattermost channel when a job notification event is raised by Rundeck.
      *
      * @param trigger name of job notification event causing notification
      * @param executionData job execution data
@@ -81,25 +112,25 @@ public class MattermostNotificationPlugin implements NotificationPlugin {
 
         String ACTUAL_MATTERMOST_TEMPLATE;
 
-//        if(null != external_template && !external_template.isEmpty()) {
-//            try {
-//                FileTemplateLoader externalTemplate = new FileTemplateLoader(new File(SLACK_EXT_MESSAGE_TEMPLATE_PATH));
-//                System.err.printf("Found external template directory. Using it.\n");
-//                TemplateLoader[] loaders = new TemplateLoader[]{externalTemplate};
-//                MultiTemplateLoader mtl = new MultiTemplateLoader(loaders);
-//                FREEMARKER_CFG.setTemplateLoader(mtl);
-//                ACTUAL_MATTERMOST_TEMPLATE = external_template;
-//            } catch (Exception e) {
-//                System.err.printf("No such directory: %s\n", SLACK_EXT_MESSAGE_TEMPLATE_PATH);
-//                return false;
-//            }
-//        }else{
-            ClassTemplateLoader builtInTemplate = new ClassTemplateLoader(MattermostNotificationPlugin.class, "/templates");
-            TemplateLoader[] loaders = new TemplateLoader[]{builtInTemplate};
-            MultiTemplateLoader mtl = new MultiTemplateLoader(loaders);
-            FREEMARKER_CFG.setTemplateLoader(mtl);
-            ACTUAL_MATTERMOST_TEMPLATE = MATTERMOST_MESSAGE_TEMPLATE;
-//        }
+        if(null != external_template && !external_template.isEmpty()) {
+            try {
+                FileTemplateLoader externalTemplate = new FileTemplateLoader(new File(SLACK_EXT_MESSAGE_TEMPLATE_PATH));
+                System.err.printf("Found external template directory. Using it.\n");
+                TemplateLoader[] loaders = new TemplateLoader[]{externalTemplate};
+                MultiTemplateLoader mtl = new MultiTemplateLoader(loaders);
+                FREEMARKER_CFG.setTemplateLoader(mtl);
+                ACTUAL_MATTERMOST_TEMPLATE = external_template;
+            } catch (Exception e) {
+                System.err.printf("No such directory: %s\n", SLACK_EXT_MESSAGE_TEMPLATE_PATH);
+                return false;
+            }
+        }else{
+                ClassTemplateLoader builtInTemplate = new ClassTemplateLoader(MattermostNotificationPlugin.class, "/templates");
+                TemplateLoader[] loaders = new TemplateLoader[]{builtInTemplate};
+                MultiTemplateLoader mtl = new MultiTemplateLoader(loaders);
+                FREEMARKER_CFG.setTemplateLoader(mtl);
+                ACTUAL_MATTERMOST_TEMPLATE = MATTERMOST_MESSAGE_TEMPLATE;
+        }
 
         TRIGGER_NOTIFICATION_DATA.put(TRIGGER_START,   new MattermostNotificationData(ACTUAL_MATTERMOST_TEMPLATE, MATTERMOST_MESSAGE_COLOR_YELLOW));
         TRIGGER_NOTIFICATION_DATA.put(TRIGGER_SUCCESS, new MattermostNotificationData(ACTUAL_MATTERMOST_TEMPLATE, MATTERMOST_MESSAGE_COLOR_GREEN));
@@ -115,7 +146,7 @@ public class MattermostNotificationPlugin implements NotificationPlugin {
             throw new IllegalArgumentException("Unknown trigger type: [" + trigger + "].");
         }
 
-        String message = generateMessage(trigger, executionData, config);
+        String message = generateMessage(trigger, executionData, config, channel);
         String mattermostResponse = invokeMattermostAPIMethod(webhook_url, message);
         String ms = "payload=" + URLEncoder.encode(message);
 
@@ -129,7 +160,7 @@ public class MattermostNotificationPlugin implements NotificationPlugin {
     }
 
     // private String generateMessage(String trigger, Map executionData, Map config, String channel) {
-    private String generateMessage(String trigger, Map executionData, Map config) {
+    private String generateMessage(String trigger, Map executionData, Map config, String channel) {
         String templateName = TRIGGER_NOTIFICATION_DATA.get(trigger).template;
         String color = TRIGGER_NOTIFICATION_DATA.get(trigger).color;
 
@@ -138,13 +169,13 @@ public class MattermostNotificationPlugin implements NotificationPlugin {
         model.put("color", color);
         model.put("executionData", executionData);
         model.put("config", config);
-//         model.put("channel", channel);
-//        if(username != null && !username.isEmpty()) {
-//            model.put("username", username);
-//        }
-//        if(icon_url != null && !icon_url.isEmpty()) {
-//            model.put("icon_url", icon_url);
-//        }
+        model.put("channel", channel);
+       if(username != null && !username.isEmpty()) {
+           model.put("username", username);
+       }
+       if(icon_url != null && !icon_url.isEmpty()) {
+           model.put("icon_url", icon_url);
+       }
         StringWriter sw = new StringWriter();
         try {
             Template template = FREEMARKER_CFG.getTemplate(templateName);
