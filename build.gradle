@@ -3,7 +3,7 @@ plugins {
     id 'pl.allegro.tech.build.axion-release' version '1.13.6'
 }
 
-project.version = "1.2.7_"
+project.version = "1.2.8"
 
 sourceCompatibility = 1.8
 defaultTasks 'clean', 'build'
@@ -26,7 +26,6 @@ dependencies {
     pluginLibs group: 'org.freemarker', name: 'freemarker', version: '2.3.31'
     compile group: 'org.rundeck', name: 'rundeck-core', version: '3.0.27-20191204'
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.35'
-    implementation 'org.json:json:20210307'
 }
 
 // task to copy plugin libs to output/lib dir

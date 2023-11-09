@@ -24,7 +24,6 @@ import com.dtolabs.rundeck.plugins.descriptions.PluginProperty;
 import com.dtolabs.rundeck.plugins.notification.NotificationPlugin;
 import com.dtolabs.rundeck.plugins.descriptions.Password;
 
-import org.json.JSONObject;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -169,23 +168,17 @@ public class SlackNotificationPlugin implements NotificationPlugin {
         }
     }
 
-    private String invokeSlackAPIMethod(String webhook_url, String message) {
+    public String invokeSlackAPIMethod(String webhook_url, String message) {
         URL requestUrl = toURL(webhook_url);
 
         HttpURLConnection connection = null;
         InputStream responseStream = null;
 
-        // Create a JSONObject for the message
-        JSONObject json = new JSONObject();
-        json.put("text", message);
-
-        String body = json.toString();
-
         try {
             connection = openConnection(requestUrl);
             connection.setDoOutput(true); // Enable writing
             connection.setRequestProperty("Content-Type", "application/json"); // Set content type to JSON
-            putRequestStream(connection, body);
+            putRequestStream(connection, message);
             responseStream = getResponseStream(connection);
 
             return getSlackResponse(responseStream);
