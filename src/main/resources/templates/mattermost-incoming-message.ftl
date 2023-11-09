@@ -1,16 +1,20 @@
 
 <#if executionData.job.group??>
-    <#assign jobName="${executionData.job.group} / ${executionData.job.name}">
+    <#assign jobName="${executionData.job.group}/${executionData.job.name}">
 <#else>
     <#assign jobName="${executionData.job.name}">
 </#if>
-<#assign message="[Execution #${executionData.id}](${executionData.href}) of job [${jobName}](${executionData.job.href})">
+<#assign message="<${executionData.href}|*Execution #${executionData.id}*> of job <${executionData.job.href}|*`${jobName}`*>">
 <#if trigger == "start">
     <#assign state="Started">
 <#elseif trigger == "failure">
     <#assign state="Failed">
+<#elseif trigger == "avgduration">
+    <#assign state="Average exceeded">
+<#elseif trigger == "retryablefailure">
+   <#assign state="Retry Failure">
 <#else>
-    <#assign state="Succeeded">
+   <#assign state="Succeeded">
 </#if>
 
 {
@@ -42,6 +46,16 @@
             {
                "title":"Execution ID",
                "value":"[#${executionData.id}](${executionData.href})",
+               "short":true
+            },
+            {
+               "title":"Project",
+               "value":"${executionData.project}",
+               "short":true
+            },
+            {
+               "title":"Started By",
+               "value":"${executionData.user}",
                "short":true
             }
 <#if trigger == "failure">

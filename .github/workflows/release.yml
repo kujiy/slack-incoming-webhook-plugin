@@ -1,0 +1,75 @@
+---
+name: Build and Release Plugin
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - src/*
+      - build.gradle
+      - .github/**/*
+  push:
+    branches:
+      - master
+    paths:
+      - src/*
+      - build.gradle
+      - .github/**/*
+
+jobs:
+  build_and_release:
+    runs-on: ubuntu-latest
+    env:
+      ARTIFACT_NAME: slack-incoming-webhook-plugin
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get plugin version
+        id: get_version
+        run: |
+          VERSION=$(awk '/project.version / {print $3}' build.gradle | sed 's/"//g')
+          echo v$VERSION
+          echo "::set-output name=version::$VERSION"
+
+      - uses: actions/setup-java@v2
+        with:
+          distribution: "temurin"
+          java-version: "11"
+          cache: "gradle"
+
+      - name: Build Plugin
+        run: chmod +x gradlew && bash ./gradlew
+
+      - name: Changelog
+        uses: Bullrich/generate-release-changelog@master
+        id: generate_changelog
+        env:
+          REPO: ${{ github.repository }}
+        if: github.ref_name == 'master'
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.get_version.outputs.version }}
+          release_name: v${{ steps.get_version.outputs.version }}
+          body: |
+            ${{ steps.generate_changelog.outputs.changelog }}
+          draft: false
+          prerelease: false
+        if: github.ref_name == 'master'
+
+      - name: Upload Release Asset
+        id: upload_release_asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/libs/${{ env.ARTIFACT_NAME }}-${{ steps.get_version.outputs.version }}.jar
+          asset_name: ${{ env.ARTIFACT_NAME }}-${{ steps.get_version.outputs.version }}.jar
+          asset_content_type: application/tar+gzip
+        if: github.ref_name == 'master'

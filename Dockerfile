@@ -1,4 +1,8 @@
-FROM openjdk:8
+FROM openjdk:11
 
-WORKDIR /home/rundeck-mattermost-incoming-webhook-plugin
-CMD ["bash", "./gradlew"]
+WORKDIR /app
+
+COPY ./ .
+
+# Build plugin
+RUN ./gradlew

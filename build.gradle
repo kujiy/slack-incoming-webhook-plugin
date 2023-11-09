@@ -1,6 +1,11 @@
-apply plugin: 'java'
-sourceCompatibility = 1.6
-project.version = 0.7
+plugins {
+    id 'java'
+    id 'pl.allegro.tech.build.axion-release' version '1.13.6'
+}
+
+project.version = "1.2.9"
+
+sourceCompatibility = 1.8
 defaultTasks 'clean', 'build'
 
 configurations{
@@ -20,8 +25,9 @@ repositories {
 }
 
 dependencies {
-    pluginLibs group: 'org.freemarker', name: 'freemarker', version: '2.3.20'
-    compile(group:'org.rundeck', name: 'rundeck-core', version: '2.1.1')
+    pluginLibs group: 'org.freemarker', name: 'freemarker', version: '2.3.31'
+    compile group: 'org.rundeck', name: 'rundeck-core', version: '3.0.27-20191204'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.35'
 }
 
 // task to copy plugin libs to output/lib dir
@@ -34,8 +40,18 @@ jar {
     baseName = 'rundeck-mattermost'
     //include contents of output dir
     from "$buildDir/output"
+    archivesBaseName = "slack-incoming-webhook-plugin"
+
     manifest {
-        attributes 'Rundeck-Plugin-Version': '1.1', 'Rundeck-Plugin-Archive': 'true','Rundeck-Plugin-File-Version': "${project.version}"
+        attributes 'Rundeck-Plugin-Name' : 'Slack Notification'
+        attributes 'Rundeck-Plugin-Description' : 'Sends Rundeck notification messages to a slack channel.'
+        attributes 'Rundeck-Plugin-Rundeck-Compatibility-Version': '3.0.27+'
+        attributes 'Rundeck-Plugin-Tags': 'java,notification,slack'
+        attributes 'Rundeck-Plugin-License': 'Apache 2.0'
+        attributes 'Rundeck-Plugin-Source-Link': 'https://github.com/stone-payments/slack-incoming-webhook-plugin'
+        attributes 'Rundeck-Plugin-Target-Host-Compatibility': 'all'
+        attributes 'Rundeck-Plugin-Author': 'Paulo Mariano (paulo.azevedo@stone.com.br)'
+        attributes 'Rundeck-Plugin-Version': "1.2", 'Rundeck-Plugin-Archive': 'true','Rundeck-Plugin-File-Version': "${project.version}"
         //create space-separated list of pluginLibs
         def libList = configurations.pluginLibs.collect{'lib/'+it.name}.join(' ')
         //attributes 'Rundeck-Plugin-Classnames': 'com.bitplaces.rundeck.plugins.slack.SlackNotificationPlugin', 'Rundeck-Plugin-Libs': "${libList}"
@@ -47,5 +63,5 @@ jar {
 jar.dependsOn(copyToLib)
 
 wrapper {
-    gradleVersion = '1.10'
+    gradleVersion = '5.6.4'
 }
